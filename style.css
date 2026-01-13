@@ -1,0 +1,333 @@
+/* ---------- Base ---------- */
+:root{
+  --bg: #faf7f2;
+  --ink: #1d1d1d;
+  --muted: rgba(0,0,0,.6);
+  --card: rgba(255,255,255,.72);
+  --line: rgba(0,0,0,.12);
+  --shadow: 0 18px 50px rgba(0,0,0,.12);
+  --radius: 18px;
+}
+
+*{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+body{
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+}
+
+img{ max-width: 100%; display: block; }
+a{ color: inherit; text-decoration: none; }
+
+.container{
+  width: min(1080px, 92vw);
+  margin: 0 auto;
+}
+
+.container--center{
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.section{
+  padding: 88px 0;
+}
+
+.section__kicker{
+  margin: 0 0 18px 0;
+  letter-spacing: .18em;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.section__kicker--center{
+  text-align: center;
+}
+/* ---------- Page Box (아이보리 중앙 박스) ---------- */
+.page-box{
+  width: min(1040px, 92vw);
+  margin: 0 auto 120px;              /* 하단 여유: 나중에 상자 바닥 이미지 자리 */
+  background: #fff3df;               /* 아이보리 */
+  border: 1px solid rgba(0,0,0,.10);
+  box-shadow: 0 30px 90px rgba(0,0,0,.10);
+  position: relative;
+
+  /* 세로면이 살짝 느슨하게 굽은 느낌 */
+  border-radius: 0;
+
+  /* 내용이 벽에 붙지 않게 */
+  padding: 40px 0 70px;
+
+  overflow: hidden; /* 곡선 밖으로 삐져나오는 장식 숨김 */
+}
+
+/* 손그림 같은 “옆면 곡선” 느낌을 주는 은은한 그림자 */
+.page-box::before,
+.page-box::after{
+  content: "";
+  position: absolute;
+  top: 26px;
+  bottom: 26px;
+  width: 42px;
+  pointer-events: none;
+  opacity: .55;
+}
+
+/* 왼쪽 옆면 */
+.page-box::before{
+  left: -18px;
+  background: radial-gradient(closest-side, rgba(0,0,0,.09), rgba(0,0,0,0));
+  transform: rotate(-1.2deg);
+  border-radius: 60% 40% 55% 45% / 45% 60% 40% 55%;
+}
+
+/* 오른쪽 옆면 */
+.page-box::after{
+  right: -18px;
+  background: radial-gradient(closest-side, rgba(0,0,0,.08), rgba(0,0,0,0));
+  transform: rotate(1.1deg);
+  border-radius: 40% 60% 45% 55% / 55% 40% 60% 45%;
+}
+
+/* page-box 안의 섹션은 살짝만 줄여서 더 “한 장” 느낌 */
+.page-box .section{
+  padding: 70px 0;
+}
+
+/* 박스 안에서는 컨테이너 폭을 조금 줄여 중앙에 모이게 */
+.page-box .container{
+  width: min(880px, 88vw);
+}
+
+/* 모바일에서 곡선/여백 과하지 않게 */
+@media (max-width: 900px){
+  .page-box{
+    border-radius: 0px;
+    padding: 26px 0 46px;
+    margin-bottom: 90px;
+  }
+  .page-box::before,
+  .page-box::after{
+    display: none;
+  }
+  .page-box .container{
+    width: min(920px, 92vw);
+  }
+}
+
+/* ---------- 1) Hero ---------- */
+.hero{
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hero__img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.02);
+}
+
+.hero__overlay{
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(0,0,0,.15), rgba(0,0,0,.55));
+  pointer-events: none;
+}
+
+/* ---------- 2) Intro ---------- */
+.paper{
+  width: min(760px, 92vw);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 28px 26px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.paper p{
+  margin: 0;
+  font-size: 16px;
+}
+
+/* ---------- 3) People ---------- */
+
+.people__grid{
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.person{
+  display: grid;
+  gap: 12px;
+  position: relative;
+  text-align: center;
+}
+
+/* ✅ 캐릭터 이미지: 바깥 박스 제거 */
+.person__img{
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  border: none;
+  box-shadow: none;
+  background: none;
+
+  position: relative;
+  z-index: 2;
+  margin-bottom: -10px;
+}
+
+/* ✅ 소개 카드: 블라인드 초기(접힘) 상태 */
+.person__card{
+
+  transform: translateY(-26px) scaleY(0);
+  transform-origin: top;
+  opacity: 0;
+
+  transition:
+    transform 1600ms cubic-bezier(.12,.9,.12,1),
+    opacity 600ms ease;
+
+  transition-delay: 240ms, 240ms;
+}
+
+.person__card.is-open{
+  transform: translateY(0) scaleY(1);
+  opacity: 1;
+}
+
+
+/* ✅ 스크롤로 보이면 펼쳐짐 */
+.person__card.is-open{
+  transform: translateY(0) scaleY(1);
+  opacity: 1;
+}
+
+.person__name{
+  margin: 0 0 6px 0;
+  font-size: 18px;
+}
+
+.person__desc{
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+
+/* ---------- 4) Chapters ---------- */
+.chapters__grid{
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.chapter{
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: rgba(255,255,255,.55);
+  box-shadow: var(--shadow);
+  transform: translateY(0);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.chapter__imgWrap{
+  position: relative;
+  overflow: hidden;
+}
+
+.chapter__img{
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform .35s ease, filter .35s ease;
+  filter: saturate(1) contrast(1);
+}
+
+.chapter__label{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+}
+
+.chapter__title{
+  font-weight: 700;
+  letter-spacing: .08em;
+  font-size: 13px;
+}
+
+.chapter__hint{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Hover interaction */
+.chapter:hover{
+  transform: translateY(-6px);
+  border-color: rgba(0,0,0,.22);
+}
+
+.chapter:hover .chapter__img{
+  transform: scale(1.06);
+  filter: saturate(1.05) contrast(1.05);
+}
+
+/* keyboard focus */
+.chapter:focus-visible{
+  outline: 3px solid rgba(0,0,0,.35);
+  outline-offset: 3px;
+}
+
+.chapters__note{
+  margin: 18px auto 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+code{
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,.6);
+}
+
+/* ---------- Footer ---------- */
+.footer{
+  padding: 40px 0 60px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.toTop{
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.55);
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px){
+  .chapters__grid{ grid-template-columns: 1fr; }
+  .people__grid{ grid-template-columns: 1fr; }
+  .section{ padding: 70px 0; }
+}
