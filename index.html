@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!doctype html>
 <html lang="ko">
 <head>
@@ -8,60 +9,85 @@
 </head>
 <body>
 
-  <!-- 1) 헤더: 화면 가득 이미지 -->
-  <header class="hero" id="top" aria-label="Hero">
-    <img src="상자-표지-글씨-포함.png" alt="header image" class="hero__img" />
-    <div class="hero__overlay" aria-hidden="true"></div>
+  <!-- hero- 상자 열리는 애니 시작되는 첫 화면 -->
+  <header class="hero" id="top" aria-label="Box Hero">
+    <!-- hero 안에서 뚜껑, 종이, 바닥을 겹치기 위한 stage -->
+    <div class="hero__stage">
+
+      <!-- 상자 뚜껑 레이어 -->
+      <img
+        src="box_top.PNG"
+        alt=""
+        class="hero__lid"
+      />
+
+      <!-- ✅ 종이 레이어(HTML에 반드시 있어야 함) -->
+      <div class="hero__paper" aria-hidden="true">
+        <!-- 종이 위 타이틀(연출용) -->
+        <div class="hero__paperTitle">
+          <img
+            src="title_handwriting.png"
+            alt="INTERVIEW with Illustrator Yundong"
+            class="hero__titleImg"
+          />
+        </div>
+      </div>
+
+      <!-- 상자 바닥 레이어 -->
+      <img
+        src="box_bottom.PNG"
+        alt=""
+        class="hero__bottom"
+      />
+    </div>
   </header>
 
   <main>
-    <!-- ✅ 아이보리 중앙 박스 (여기 안에 모든 내용 들어감) -->
+    <!-- 아이보리 중앙 박스 (여기 안에 모든 내용 들어감) -->
     <div class="page-box">
 
-      <!-- 2) Intro -->
+      <!-- Intro -->
       <section class="section intro" id="intro">
         <div class="container container--center">
           <h2 class="section__kicker">-INTRO-</h2>
           <div class="paper">
             <p>
-              日常の中の、
-小さくてささやかな瞬間を描いています。<br/>
-吹き抜ける風の匂いや、<br/>
-偶然出会ったキャラメル色の猫のような、<br/>
-何気ない一瞬一瞬を大切にしています。<br/>
-私の絵が、誰かの心にやさしい余白とぬくもりを残せたら、<br/>
-それ以上に嬉しいことはありません。 <br/>
+              日常の中の、<br/>
+              小さくてささやかな瞬間を描いています。<br/>
+              吹き抜ける風の匂いや、<br/>
+              偶然出会ったキャラメル色の猫のような、<br/>
+              何気ない一瞬一瞬を大切にしています。<br/>
+              私の絵が、誰かの心にやさしい余白とぬくもりを残せたら、<br/>
+              それ以上に嬉しいことはありません。<br/>
             </p>
           </div>
         </div>
       </section>
 
-      <!-- 3) Interviewer / Interviewee 소개 -->
+      <!-- Interviewer / Interviewee 소개 -->
       <section class="section people" id="people">
         <div class="container">
           <h2 class="section__kicker section__kicker--center">PEOPLE</h2>
 
           <div class="people__grid">
-            <!-- 왼쪽: 나^0^ -->
+            <!-- 왼쪽: 나 -->
             <article class="person">
               <img class="person__img" src="내-프로필-이미지.png" alt="Interviewer" />
-              <div class="person__card">
+              <div class="person__card is-open">
                 <h3 class="person__name">Interviewer</h3>
                 <p class="person__desc">
-                  デザイン学部の学生、ヒナです。 <br/>
-                  
+                  デザイン学部の学生、ヒナです。<br/>
                 </p>
               </div>
             </article>
 
-            <!-- 오른쪽: 윤동님!! -->
+            <!-- 오른쪽: 윤동님 -->
             <article class="person">
               <img class="person__img" src="윤동님-프로필-이미지.png" alt="Interviewee" />
-              <div class="person__card">
+              <div class="person__card is-open">
                 <h3 class="person__name">Interviewee</h3>
                 <p class="person__desc">
-                  韓国のイラストレーターユンドンです。 <br/>
-                  
+                  韓国のイラストレーターユンドンです。<br/>
                 </p>
               </div>
             </article>
@@ -69,13 +95,12 @@
         </div>
       </section>
 
-      <!-- 4) Chapters -->
+      <!-- Chapters -->
       <section class="section chapters" id="chapters">
         <div class="container">
           <h2 class="section__kicker section__kicker--center">CHAPTERS</h2>
 
           <div class="chapters__grid">
-
             <!-- Chapter 1 -->
             <a class="chapter" href="chapter1.html" aria-label="Go to Chapter 1">
               <div class="chapter__imgWrap">
@@ -108,12 +133,9 @@
                 <span class="chapter__hint">click</span>
               </div>
             </a>
-
           </div>
 
-          <p class="chapters__note">
-            
-          </p>
+          <p class="chapters__note"></p>
         </div>
       </section>
 
@@ -124,6 +146,10 @@
     <a class="toTop" href="#top">↑ TOP</a>
   </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
   <script src="main.js"></script>
+
+
 </body>
 </html>

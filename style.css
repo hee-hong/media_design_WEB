@@ -1,164 +1,248 @@
-/* ---------- Base ---------- */
+/* style.css */
+
+/* ---------- 0) Base / Variables ---------- */
 :root{
-  --bg: #faf7f2;
-  --ink: #1d1d1d;
-  --muted: rgba(0,0,0,.6);
-  --card: rgba(255,255,255,.72);
+  --bg: #f6f1e6;
+  --muted: rgba(60, 29, 15, 0.585);
+  --paperW: clamp(260px, 70vw, 900px);
+
   --line: rgba(0,0,0,.12);
-  --shadow: 0 18px 50px rgba(0,0,0,.12);
-  --radius: 18px;
+  --shadow: 0 18px 50px rgba(0,0,0,.10);
 }
 
 *{ box-sizing: border-box; }
-html{ scroll-behavior: smooth; }
+html{ overflow-x: hidden; }
+body{
+  overflow-x: hidden;
+  min-height: 100%;
+}
+
 body{
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
-  color: var(--ink);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   background: var(--bg);
-  line-height: 1.6;
+  color: rgba(0,0,0,.86);
 }
 
 img{ max-width: 100%; display: block; }
 a{ color: inherit; text-decoration: none; }
 
+/* Layout helpers */
 .container{
-  width: min(1080px, 92vw);
+  width: min(1040px, 92vw);
   margin: 0 auto;
+}
+/* ✅ page-box 안에서는 container가 paper 폭을 넘지 않게 */
+.page-box .container{
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .container--center{
-  display: grid;
-  place-items: center;
   text-align: center;
+}
+
+/* ✅ main/page-box가 hero 영역으로 올라와도 hero 배경에 가리지 않게 */
+main{
+  position: relative;
+  z-index: 1; /* hero 배경(0)보다 위, hero 이미지들(2+)보다 아래 */
+  will-change: transform; /* ✅ GSAP로 main을 끌어올릴 때 부드럽게 */
+}
+
+.page-box{
+  width: var(--paperW);
+  max-width: 100%;
+  margin: 0 auto;
+
+  /* ✅ box bottom과 “겹쳐 붙는” 연출 (DevTools로 수치만 미세조정) */
+  margin-top: -18vh;
+
+  /* ✅ 박스(종이)처럼 보이게 */
+  background: rgba(255, 243, 224, 0.65);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  border-radius: 0;
+
+  /* ✅ 안쪽 여백: 전체 본문이 종이 안에 들어가게 */
+  padding: 60px 22px 30px;
+
+  will-change: opacity, transform;
+  overflow-x: clip;   /* ✅ 내부가 가로로 밀어도 박스 밖으로 못 나가게 */
 }
 
 .section{
-  padding: 88px 0;
+  padding: 90px 0;
 }
 
 .section__kicker{
-  margin: 0 0 18px 0;
-  letter-spacing: .18em;
+  margin: 0 0 22px 0;
   font-size: 14px;
-  text-transform: uppercase;
-  color: var(--muted);
+  letter-spacing: .18em;
 }
-
 .section__kicker--center{
   text-align: center;
 }
-/* ---------- Page Box (아이보리 중앙 박스) ---------- */
-.page-box{
-  width: min(1040px, 92vw);
-  margin: 0 auto 120px;              /* 하단 여유: 나중에 상자 바닥 이미지 자리 */
-  background: #fff3df;               /* 아이보리 */
-  border: 1px solid rgba(0,0,0,.10);
-  box-shadow: 0 30px 90px rgba(0,0,0,.10);
-  position: relative;
 
-  /* 세로면이 살짝 느슨하게 굽은 느낌 */
-  border-radius: 0;
+.paper{
+  background: rgba(255,255,255,.65);
+  padding: 26px 22px;
 
-  /* 내용이 벽에 붙지 않게 */
-  padding: 40px 0 70px;
-
-  overflow: hidden; /* 곡선 밖으로 삐져나오는 장식 숨김 */
+  /* ✅ page-box 안에서 안정적으로 담기 + 중앙 */
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-/* 손그림 같은 “옆면 곡선” 느낌을 주는 은은한 그림자 */
-.page-box::before,
-.page-box::after{
-  content: "";
-  position: absolute;
-  top: 26px;
-  bottom: 26px;
-  width: 42px;
-  pointer-events: none;
-  opacity: .55;
-}
-
-/* 왼쪽 옆면 */
-.page-box::before{
-  left: -18px;
-  background: radial-gradient(closest-side, rgba(0,0,0,.09), rgba(0,0,0,0));
-  transform: rotate(-1.2deg);
-  border-radius: 60% 40% 55% 45% / 45% 60% 40% 55%;
-}
-
-/* 오른쪽 옆면 */
-.page-box::after{
-  right: -18px;
-  background: radial-gradient(closest-side, rgba(0,0,0,.08), rgba(0,0,0,0));
-  transform: rotate(1.1deg);
-  border-radius: 40% 60% 45% 55% / 55% 40% 60% 45%;
-}
-
-/* page-box 안의 섹션은 살짝만 줄여서 더 “한 장” 느낌 */
-.page-box .section{
-  padding: 70px 0;
-}
-
-/* 박스 안에서는 컨테이너 폭을 조금 줄여 중앙에 모이게 */
-.page-box .container{
-  width: min(880px, 88vw);
-}
-
-/* 모바일에서 곡선/여백 과하지 않게 */
-@media (max-width: 900px){
-  .page-box{
-    border-radius: 0px;
-    padding: 26px 0 46px;
-    margin-bottom: 90px;
-  }
-  .page-box::before,
-  .page-box::after{
-    display: none;
-  }
-  .page-box .container{
-    width: min(920px, 92vw);
-  }
-}
-
-/* ---------- 1) Hero ---------- */
+/* ---------- 1) Hero (레이어 구조 ) ---------- */
 .hero{
   position: relative;
   height: 100vh;
   overflow: hidden;
+
+  /* ✅ hero 배경은 ::before로 분리 (main이 위로 올라와도 가리지 않게) */
+  background: transparent;
 }
 
-.hero__img{
+/* ✅ hero 배경 레이어 (가장 아래) */
+.hero::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  z-index: 0;
+}
+
+/* 뚜껑/종이/바닥을 겹칠 stage */
+.hero__stage{
+  position: absolute;   /* 기준점 고정 */
+  inset: 24px 0 0 0;    /* ✅ 위에서 24px 아래로 전체 이동 */
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.02);
+  height: calc(100% - 24px); /* ✅ 높이도 같이 보정 */
+  z-index: 2;           /* hero 배경(0) 위 */
 }
 
+
+/* 뚜껑/바닥 공통 */
+.hero__lid,
+.hero__bottom{
+  position: absolute;
+  left: 0;
+  width: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  will-change: transform, opacity; /* ✅ 스크롤 애니 대비 */
+}
+
+/* 뚜껑 */
+.hero__lid{
+  top: 0;
+  height: 100vh;
+  z-index: 30;
+  transform: translateY(-5px) scale(1.2);
+}
+
+/* 바닥 */
+.hero__bottom{
+  bottom: 0;
+  height: 100vh;
+
+  /* ✅ hero 안에서 bottom이 종이/타이틀보다 위로 오게 */
+  z-index: 25;
+
+  transform: translateY(-5px) scale(1.2);
+}
+
+/* ✅ 종이 레이어(HTML에도 존재해야 함) */
+.hero__paper{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  /* ✅ 종이도 화면에 따라 같은 비율로 커졌다/작아졌다 */
+  width: var(--paperW);
+  aspect-ratio: 1040 / 640;
+  transform: translate(-50%, -50%);
+  background: #fff3df;
+  border-radius: 0;
+  overflow: hidden;
+
+  /* ✅ bottom(25) 아래로 두어 “바닥이 종이/타이틀 위에 덮이는” 연출 */
+  z-index: 20;
+
+  will-change: transform, opacity; /* ✅ 스크롤 애니 대비 */
+}
+
+/* 종이 위 타이틀 */
+.hero__paperTitle{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+
+  /* ✅ 종이(20) 위, 하지만 bottom(25) 아래 */
+  z-index: 21;
+}
+
+/* 손그림 타이틀 이미지 */
+.hero__titleImg{
+  width: min(520px, 80%);
+  height: auto;
+  display: block;
+  filter: saturate(0.95) contrast(1.05);
+  will-change: opacity, transform; /* ✅ 페이드 대비 */
+}
+
+/* (선택) overlay (현재 HTML에 없으면 적용 안 됨) */
 .hero__overlay{
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(0,0,0,.15), rgba(0,0,0,.55));
+  background: radial-gradient(circle at 50% 30%, rgba(0,0,0,.10), rgba(0,0,0,.35));
+  pointer-events: none;
+
+  /* ✅ 배경(0) 위, main(1)보다 위로 가려면 2 이상이 안전 */
+  z-index: 5;
+}
+
+/* hero가 끝나면(=pin 구간 벗어나면) hero가 더 이상 덮지 않게 */
+.hero.hero-done{
   pointer-events: none;
 }
 
-/* ---------- 2) Intro ---------- */
-.paper{
-  width: min(760px, 92vw);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-  padding: 28px 26px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
+/* hero 안에서 실제로 덮는 레이어(뚜껑/종이/바닥 등)를 숨김 */
+.hero.hero-done .hero__stage{
+  opacity: 0;
+  visibility: hidden;
 }
 
-.paper p{
-  margin: 0;
-  font-size: 16px;
+/* 모바일 조정 */
+@media (max-width: 480px){
+  .hero__lid,
+  .hero__bottom{
+    height: 45vh;
+  }
+
+  /* ✅ 모바일에서 종이도 더 자연스럽게 줄어들게 */
+  .hero__paper{
+    width: clamp(240px, 88vw, 640px);
+  }
+
+  .hero__titleImg{
+    width: min(420px, 84%);
+  }
+
+  /* ✅ 모바일에서 겹침 정도/패딩 조정 */
+  .page-box{
+    margin-top: -10vh;
+    padding: 40px 16px 22px;
+  }
 }
 
 /* ---------- 3) People ---------- */
-
 .people__grid{
   margin-top: 28px;
   display: grid;
@@ -167,14 +251,20 @@ a{ color: inherit; text-decoration: none; }
   align-items: start;
 }
 
+/* ✅ 2열 유지 + 그리드 아이템이 박스를 밀어내지 못하게 */
+.people__grid > *{
+  min-width: 0;
+}
+
 .person{
   display: grid;
   gap: 12px;
   position: relative;
   text-align: center;
+  min-width: 0; /* ✅ 안전 */
 }
 
-/* ✅ 캐릭터 이미지: 바깥 박스 제거 */
+/* 캐릭터 이미지: 바깥 박스 제거 */
 .person__img{
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -188,27 +278,23 @@ a{ color: inherit; text-decoration: none; }
   margin-bottom: -10px;
 }
 
-/* ✅ 소개 카드: 블라인드 초기(접힘) 상태 */
+/* 소개 카드 */
 .person__card{
-
-  transform: translateY(-26px) scaleY(0);
+  transform: translateY(-26px) scaleY(1);
   transform-origin: top;
-  opacity: 0;
+  opacity: 1;
 
   transition:
     transform 1600ms cubic-bezier(.12,.9,.12,1),
     opacity 600ms ease;
 
   transition-delay: 240ms, 240ms;
+
+  /* ✅ (중요) 중첩 문법 오류 제거 + 카드가 밖으로 못 나가게 */
+  max-width: 100%;
+  overflow: hidden;  /* 또는 overflow: clip; */
 }
 
-.person__card.is-open{
-  transform: translateY(0) scaleY(1);
-  opacity: 1;
-}
-
-
-/* ✅ 스크롤로 보이면 펼쳐짐 */
 .person__card.is-open{
   transform: translateY(0) scaleY(1);
   opacity: 1;
@@ -223,8 +309,11 @@ a{ color: inherit; text-decoration: none; }
   margin: 0;
   color: var(--muted);
   font-size: 14px;
-}
 
+  /* ✅ 긴 텍스트가 폭을 밀어내지 않게 */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 
 /* ---------- 4) Chapters ---------- */
 .chapters__grid{
@@ -232,6 +321,11 @@ a{ color: inherit; text-decoration: none; }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 22px;
+}
+
+/* ✅ 3열 유지 + 아이템이 폭을 밀어내지 않게 (안전) */
+.chapters__grid > *{
+  min-width: 0;
 }
 
 .chapter{
@@ -242,6 +336,7 @@ a{ color: inherit; text-decoration: none; }
   box-shadow: var(--shadow);
   transform: translateY(0);
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  min-width: 0; /* ✅ 안전 */
 }
 
 .chapter__imgWrap{
@@ -278,7 +373,7 @@ a{ color: inherit; text-decoration: none; }
   color: var(--muted);
 }
 
-/* Hover interaction */
+/* Hover */
 .chapter:hover{
   transform: translateY(-6px);
   border-color: rgba(0,0,0,.22);
@@ -330,4 +425,7 @@ code{
   .chapters__grid{ grid-template-columns: 1fr; }
   .people__grid{ grid-template-columns: 1fr; }
   .section{ padding: 70px 0; }
+
+  /* ✅ 태블릿 구간에서 겹침 정도 */
+  .page-box{ margin-top: -14vh; }
 }
