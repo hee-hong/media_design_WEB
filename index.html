@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Interview Site</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Adobe Fonts (Typekit) -->
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'zmm6xez',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),
+      tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;
+      h.className+=" wf-loading";
+      tk.src='https://use.typekit.net/'+config.kitId+'.js';
+      tk.async=true;
+      tk.onload=tk.onreadystatechange=function(){
+        a=this.readyState;
+        if(f||a&&a!="complete"&&a!="loaded")return;
+        f=true;
+        clearTimeout(t);
+        try{Typekit.load(config)}catch(e){}
+      };
+      s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+
+  <!-- hero- 첫 화면: 타이틀만 중앙 / 스크롤 시작하면 상자 + 히어로 인트로 등장 -->
+  <header class="hero" id="top" aria-label="Box Hero">
+
+    <!-- ✅ 첫 화면 타이틀만 중앙 -->
+    <div class="hero__titleOnly" aria-hidden="true">
+      <img src="main_title.PNG" alt="" />
+    </div>
+
+    <!-- hero 안에서 뚜껑/바닥/인트로 겹치기 위한 stage -->
+    <div class="hero__stage">
+
+      <!-- 상자 뚜껑 레이어 -->
+      <img
+        src="box_top.PNG"
+        alt=""
+        class="hero__lid"
+      />
+
+      <!-- ✅ lid 투명영역 가림막 -->
+      <div class="hero__lidMask" aria-hidden="true"></div>
+
+      <!-- ✅ hero에서만 잠깐 보일 Intro 전용 박스(복제본) -->
+      <div class="hero__introStage" aria-hidden="true">
+        <h2 class="section__kicker">-INTRO-</h2>
+        <div class="paper heroIntro__paper">
+          <p>
+            日常の中の、<br/>
+            小さくてささやかな瞬間を描いています。<br/>
+            吹き抜ける風の匂いや、<br/>
+            偶然出会ったキャラメル色の猫のような、<br/>
+            何気ない一瞬一瞬を大切にしています。<br/>
+            私の絵が、誰かの心にやさしい余白とぬくもりを残せたら、<br/>
+            それ以上に嬉しいことはありません。<br/>
+          </p>
+        </div>
+      </div>
+
+      <!-- 상자 바닥 레이어 -->
+      <img
+        src="box_bottom.PNG"
+        alt=""
+        class="hero__bottom"
+      />
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ✅ STEP 1: PEOPLE (가운데 카드로 등장했다가 페이드아웃) -->
+    <section class="step step--fade" id="people">
+      <div class="container container--center">
+        <h2 class="section__kicker section__kicker--center">PEOPLE</h2>
+
+        <div class="sectionBox">
+          <div class="people__grid">
+            <!-- 왼쪽: 나 -->
+            <article class="person">
+              <img class="person__img" src="내-프로필-이미지.png" alt="Interviewer" />
+              <div class="person__card is-open">
+                <h3 class="person__name">Interviewer</h3>
+                <p class="person__desc">
+                  デザイン学部の学生、ヒナです。<br/>
+                </p>
+              </div>
+            </article>
+
+            <!-- 오른쪽: 윤동님 -->
+            <article class="person">
+              <img class="person__img" src="윤동님-프로필-이미지.png" alt="Interviewee" />
+              <div class="person__card is-open">
+                <h3 class="person__name">Interviewee</h3>
+                <p class="person__desc">
+                  韓国のイラストレーターユンドンです。<br/>
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ✅ STEP 2: CHAPTERS (마지막 카드 / 페이드아웃 없음 + 바텀 유지) -->
+    <section class="step step--final" id="chapters">
+      <div class="container container--center">
+        <h2 class="section__kicker section__kicker--center">CHAPTERS</h2>
+
+        <div class="sectionBox">
+          <div class="chapters__grid">
+
+            <a class="chapter" href="chapter1.html" aria-label="Go to Chapter 1">
+              <div class="chapter__imgWrap">
+                <img src="chapter1.PNG" alt="Chapter 1 image" class="chapter__img" />
+              </div>
+              <div class="chapter__label">
+                <span class="chapter__title">CHAPTER 1</span>
+                <span class="chapter__hint">click</span>
+              </div>
+            </a>
+
+            <a class="chapter" href="chapter2.html" aria-label="Go to Chapter 2">
+              <div class="chapter__imgWrap">
+                <img src="chapter2.PNG" alt="Chapter 2 image" class="chapter__img" />
+              </div>
+              <div class="chapter__label">
+                <span class="chapter__title">CHAPTER 2</span>
+                <span class="chapter__hint">click</span>
+              </div>
+            </a>
+
+            <a class="chapter" href="chapter3.html" aria-label="Go to Chapter 3">
+              <div class="chapter__imgWrap">
+                <img src="chapter3.PNG" alt="Chapter 3 image" class="chapter__img" />
+              </div>
+              <div class="chapter__label">
+                <span class="chapter__title">CHAPTER 3</span>
+                <span class="chapter__hint">click</span>
+              </div>
+            </a>
+
+          </div>
+
+          <p class="chapters__note"></p>
+        </div>
+      </div>
+
+     
+    </section>
+
+  </main>
+
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="main.js"></script>
+
+</body>
+</html>
