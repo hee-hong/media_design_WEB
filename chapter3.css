@@ -1,3 +1,14 @@
+body{
+  margin: 0;
+  background-color: #faf7f2;
+  background-image: url("chapter3_bg.PNG")!important;;
+  background-repeat: repeat!important;;
+  background-size: 380px auto!important;; /* 여기만 조절 */
+  background-attachment: fixed!important;; /* 스크롤 시 더 벽지 느낌 */
+}
+
+
+
 /* 기본 리셋/타이포 */
 *{ box-sizing: border-box; }
 html{ scroll-behavior: smooth; }
@@ -7,6 +18,9 @@ body{
   color: #1d1d1d;
   background: #faf7f2;
   line-height: 1.9;
+  /* 메인 폰트 설정함 */ 
+   --font-main: "fot-tsukubrdgothic-std", "Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+
 }
 
 img{ max-width: 100%; display:block; }
@@ -65,29 +79,7 @@ a{ color: inherit; text-decoration: none; }
   will-change: opacity, transform;
 }
 
-.hero-img--banner{
-  height: 78px;      /* 배너에서 보이는 이미지 크기 */
-  width: auto;
-  object-fit: contain;
-  transform: scale(.98);
-  transition: transform 220ms ease;
-  will-change: transform;
-}
 
-/* 스크롤로 배너 활성화 */
-.hero-banner.is-on{
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.hero-banner.is-on .hero-img--banner{
-  transform: scale(1);
-}
-
-/* 배너가 뜰 때 본문이 가려지지 않게 여백 확보 */
-body.has-banner .reading{
-  padding-top: 36px;
-}
 
 /* 모바일 */
 @media (max-width: 720px){
@@ -216,5 +208,93 @@ body.has-banner .reading{
   }
   .section-tag--break{
     margin-top: 120px;
+  }
+}
+
+
+/* ===== Scroll Animation ===== */
+.scrollAnim{
+  height: 160vh;
+  margin: 30px 0 30px;
+  position: relative;
+}
+
+.scrollAnim__sticky{
+  position: sticky;
+  top: 120px;
+  display: grid;
+  place-items: center;
+  height: calc(100vh - 160px);
+}
+
+.scrollAnim__img{
+  width: min(640px, 86vw);
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform: translateZ(0);
+}
+
+@media (max-width: 720px){
+  .scrollAnim{ height: 150vh; }
+  .scrollAnim__sticky{ top: 96px; height: calc(100vh - 130px); }
+  .scrollAnim__img{ width: min(680px, 92vw); }
+}
+/* =========================
+   Next Story Button
+   ========================= */
+.next-story{
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 16px;
+  background: rgba(250,247,242,0.9);
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 999px;
+
+  font-size: 14px;
+  letter-spacing: .08em;
+  color: rgba(0,0,0,.85);
+  text-decoration: none;
+
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+
+  transition:
+    opacity 260ms ease,
+    transform 260ms cubic-bezier(.2,.8,.2,1);
+  z-index: 1000;
+}
+
+.next-story__icon{
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+/* 나타나는 상태 */
+.next-story.is-visible{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* hover */
+.next-story:hover{
+  transform: translateY(-2px);
+}
+
+/* 모바일 */
+@media (max-width: 720px){
+  .next-story{
+    right: 16px;
+    bottom: 16px;
+    font-size: 13px;
   }
 }

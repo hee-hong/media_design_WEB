@@ -2,12 +2,49 @@
 
 /* ---------- 0) Base / Variables ---------- */
 :root{
-  --bg: #f6f1e6;
+  --bg: #f0b09c;
   --muted: rgba(60, 29, 15, 0.585);
   --paperW: clamp(260px, 70vw, 900px);
 
-  --line: rgba(0,0,0,.12);
+  /* 질감 배경 + 반복 패턴 */
+  --bgTex: url("background.PNG");
+  --pattern: url("pattern.PNG");
+
+  /* 조절용 */
+  --bgTexSize: 900px auto;
+  --patternSize: 320px auto;
+  --patternOpacity: 0.35;
+
   --shadow: 0 18px 50px rgba(0,0,0,.10);
+
+  /* lidMask “가짜 벽지” 알파 */
+  --lidMaskAlpha: 1;
+
+  /* ✅ 공통 종이 박스(3개 카드 + hero intro 박스) */
+  --paperBg: rgba(255, 250, 243, 0.88);
+
+  /* ✅ 스케치(색연필) 테두리: 연한 모카 */
+  --sketch: rgba(120, 90, 60, 0.55);
+  --sketch2: rgba(120, 90, 60, 0.30);
+  --sketch3: rgba(120, 90, 60, 0.18);
+
+  /* 메인 폰트 */
+  --font-main: "fot-tsukubrdgothic-std", "Noto Sans KR",
+    system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+
+  /* ✅ 여백 리듬(추가) */
+  --cardW: min(920px, 92vw);
+
+  /* 섹션(화면) 위/아래 숨 쉬는 여백 */
+  --stepPadY: clamp(84px, 11vh, 160px);
+
+  /* 카드 바깥 여백(위/아래) */
+  --cardMt: clamp(26px, 3.6vw, 40px);
+  --cardMb: clamp(70px, 10vh, 130px);
+
+  /* 카드 안쪽(종이 여백) */
+  --cardPy: clamp(26px, 3.2vw, 44px);
+  --cardPx: clamp(18px, 2.6vw, 36px);
 }
 
 *{ box-sizing: border-box; }
@@ -15,13 +52,32 @@ html{ overflow-x: hidden; }
 body{
   overflow-x: hidden;
   min-height: 100%;
+  margin: 0;
+  font-family: var(--font-main);
+
+  background-color: var(--bg);
+  background-image: var(--bgTex);
+  background-repeat: repeat;
+  background-size: var(--bgTexSize);
+  background-position: top left;
+
+  color: rgba(0,0,0,.86);
 }
 
-body{
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  background: var(--bg);
-  color: rgba(0,0,0,.86);
+/* 패턴은 body에 “한 번만” 고정 */
+body::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+
+  background-image: var(--pattern);
+  background-repeat: repeat;
+  background-size: var(--patternSize);
+  background-position: top left;
+
+  opacity: var(--patternOpacity);
 }
 
 img{ max-width: 100%; display: block; }
@@ -32,239 +88,323 @@ a{ color: inherit; text-decoration: none; }
   width: min(1040px, 92vw);
   margin: 0 auto;
 }
-/* ✅ page-box 안에서는 container가 paper 폭을 넘지 않게 */
-.page-box .container{
-  width: 100%;
-  max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
+.container--center{ text-align: center; }
 
-.container--center{
-  text-align: center;
-}
-
-/* ✅ main/page-box가 hero 영역으로 올라와도 hero 배경에 가리지 않게 */
 main{
   position: relative;
-  z-index: 1; /* hero 배경(0)보다 위, hero 이미지들(2+)보다 아래 */
-  will-change: transform; /* ✅ GSAP로 main을 끌어올릴 때 부드럽게 */
+  z-index: 1;
 }
 
-.page-box{
-  width: var(--paperW);
-  max-width: 100%;
-  margin: 0 auto;
-
-  /* ✅ box bottom과 “겹쳐 붙는” 연출 (DevTools로 수치만 미세조정) */
-  margin-top: -18vh;
-
-  /* ✅ 박스(종이)처럼 보이게 */
-  background: rgba(255, 243, 224, 0.65);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-  border-radius: 0;
-
-  /* ✅ 안쪽 여백: 전체 본문이 종이 안에 들어가게 */
-  padding: 60px 22px 30px;
-
-  will-change: opacity, transform;
-  overflow-x: clip;   /* ✅ 내부가 가로로 밀어도 박스 밖으로 못 나가게 */
-}
-
-.section{
-  padding: 90px 0;
-}
-
+/* ---------------------------------------
+   ✅ 공통 타이틀(소제목)
+   - 위/아래 리듬 조금 더 세련되게
+--------------------------------------- */
 .section__kicker{
-  margin: 0 0 22px 0;
-  font-size: 14px;
-  letter-spacing: .18em;
+  margin: 0 0 clamp(18px, 2.5vw, 28px) 0;
+  font-size: clamp(15px, 1.5vw, 24px);
+  letter-spacing: .24em;
+  font-weight: 760;
 }
-.section__kicker--center{
-  text-align: center;
+.section__kicker--center{ text-align: center; }
+
+/* =========================
+   ✅ STEP 카드 구조 (긴 박스 제거 버전)
+   - pin/fade는 JS가 담당
+   - ✅ 섹션 상/하 여백을 넓혀서 “숨 쉬는” 느낌
+========================= */
+.step{
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--stepPadY) 0;   /* ✅ 여백 확대 */
+  position: relative;
+  overflow: visible;
 }
 
-.paper{
-  background: rgba(255,255,255,.65);
-  padding: 26px 22px;
-
-  /* ✅ page-box 안에서 안정적으로 담기 + 중앙 */
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  box-sizing: border-box;
+/* 카드 안쪽 폭 + 바깥 여백 */
+.sectionBox{
+  width: var(--cardW);
+  margin: var(--cardMt) auto var(--cardMb);  /* ✅ 위/아래 여백 확대 */
+  padding: var(--cardPy) var(--cardPx);      /* ✅ 카드 안쪽 여백 확대 */
 }
 
-/* ---------- 1) Hero (레이어 구조 ) ---------- */
+/* =========================
+   ✅ 손그림(색연필) 박스 스타일
+   - sectionBox + hero intro 박스에 공통 적용
+========================= */
+.sketchBox,
+.sectionBox,
+.heroIntro__paper{
+  position: relative;
+  background: var(--paperBg);
+
+  border-radius: 18px 16px 20px 14px;
+  border: 2px solid var(--sketch);
+
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.08),
+    1px 1px 0 var(--sketch2),
+    -1px 2px 0 var(--sketch3);
+}
+
+/* 2겹 스케치 라인 */
+.sketchBox::before,
+.sectionBox::before,
+.heroIntro__paper::before{
+  content: "";
+  position: absolute;
+  inset: 8px 9px 7px 8px;       /* ✅ 살짝 더 여유 */
+  border-radius: 16px 18px 14px 20px;
+
+  border: 1px solid var(--sketch2);
+  transform: rotate(-0.25deg);
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* 3겹 스케치 라인 */
+.sketchBox::after,
+.sectionBox::after,
+.heroIntro__paper::after{
+  content: "";
+  position: absolute;
+  inset: 14px 13px 13px 15px;   /* ✅ 살짝 더 여유 */
+  border-radius: 14px 16px 18px 12px;
+
+  border: 1px solid var(--sketch3);
+  transform: rotate(0.35deg);
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* =========================
+   HERO: A안 연출 (유지)
+========================= */
 .hero{
   position: relative;
   height: 100vh;
   overflow: hidden;
-
-  /* ✅ hero 배경은 ::before로 분리 (main이 위로 올라와도 가리지 않게) */
   background: transparent;
 }
 
-/* ✅ hero 배경 레이어 (가장 아래) */
-.hero::before{
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--bg);
-  z-index: 0;
+/* hero 배경은 따로 그리지 않음 */
+.hero::before,
+.hero::after{
+  content: none !important;
 }
 
-/* 뚜껑/종이/바닥을 겹칠 stage */
-.hero__stage{
-  position: absolute;   /* 기준점 고정 */
-  inset: 24px 0 0 0;    /* ✅ 위에서 24px 아래로 전체 이동 */
-  width: 100%;
-  height: calc(100% - 24px); /* ✅ 높이도 같이 보정 */
-  z-index: 2;           /* hero 배경(0) 위 */
-}
-
-
-/* 뚜껑/바닥 공통 */
-.hero__lid,
-.hero__bottom{
-  position: absolute;
-  left: 0;
-  width: 100%;
-  object-fit: cover;
-  pointer-events: none;
-  will-change: transform, opacity; /* ✅ 스크롤 애니 대비 */
-}
-
-/* 뚜껑 */
-.hero__lid{
-  top: 0;
-  height: 100vh;
-  z-index: 30;
-  transform: translateY(-5px) scale(1.2);
-}
-
-/* 바닥 */
-.hero__bottom{
-  bottom: 0;
-  height: 100vh;
-
-  /* ✅ hero 안에서 bottom이 종이/타이틀보다 위로 오게 */
-  z-index: 25;
-
-  transform: translateY(-5px) scale(1.2);
-}
-
-/* ✅ 종이 레이어(HTML에도 존재해야 함) */
-.hero__paper{
-  position: absolute;
-  left: 50%;
-  top: 50%;
-
-  /* ✅ 종이도 화면에 따라 같은 비율로 커졌다/작아졌다 */
-  width: var(--paperW);
-  aspect-ratio: 1040 / 640;
-  transform: translate(-50%, -50%);
-  background: #fff3df;
-  border-radius: 0;
-  overflow: hidden;
-
-  /* ✅ bottom(25) 아래로 두어 “바닥이 종이/타이틀 위에 덮이는” 연출 */
-  z-index: 20;
-
-  will-change: transform, opacity; /* ✅ 스크롤 애니 대비 */
-}
-
-/* 종이 위 타이틀 */
-.hero__paperTitle{
+.hero__titleOnly{
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  text-align: center;
-  padding: 24px;
-
-  /* ✅ 종이(20) 위, 하지만 bottom(25) 아래 */
-  z-index: 21;
+  z-index: 60;
+  pointer-events: none;
+  will-change: opacity, transform;
 }
 
-/* 손그림 타이틀 이미지 */
-.hero__titleImg{
-  width: min(520px, 80%);
+.hero__titleOnly img{
+  width: min(760px, 86vw);
   height: auto;
-  display: block;
-  filter: saturate(0.95) contrast(1.05);
-  will-change: opacity, transform; /* ✅ 페이드 대비 */
+  transform: translateY(-2vh);
+  will-change: opacity, transform;
 }
 
-/* (선택) overlay (현재 HTML에 없으면 적용 안 됨) */
-.hero__overlay{
+/* stage */
+.hero__stage{
+  position: absolute;
+  inset: 24px 0 0 0;
+  width: 100%;
+  height: calc(100% - 24px);
+  z-index: 1;
+  isolation: isolate;
+}
+
+/* lidMask */
+.hero__lidMask{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 32vh;
+
+  background: transparent;
+  pointer-events: none;
+  z-index: 20;
+  will-change: transform, opacity;
+}
+
+.hero__lidMask::before{
+  content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(0,0,0,.10), rgba(0,0,0,.35));
-  pointer-events: none;
 
-  /* ✅ 배경(0) 위, main(1)보다 위로 가려면 2 이상이 안전 */
-  z-index: 5;
+  background-color: var(--bg);
+  background-image: var(--bgTex);
+  background-repeat: repeat;
+  background-size: var(--bgTexSize);
+  background-position: top left;
+  background-attachment: fixed;
+
+  opacity: var(--lidMaskAlpha);
 }
 
-/* hero가 끝나면(=pin 구간 벗어나면) hero가 더 이상 덮지 않게 */
-.hero.hero-done{
+.hero__lidMask::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image: var(--pattern);
+  background-repeat: repeat;
+  background-size: var(--patternSize);
+  background-position: top left;
+  background-attachment: fixed;
+
+  opacity: calc(var(--patternOpacity) * var(--lidMaskAlpha));
   pointer-events: none;
 }
 
-/* hero 안에서 실제로 덮는 레이어(뚜껑/종이/바닥 등)를 숨김 */
-.hero.hero-done .hero__stage{
+/* bottom */
+.hero__bottom{
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 110%;
+  height: 100vh;
+  object-fit: cover;
+  pointer-events: none;
+
+  z-index: 25;
+  will-change: transform, opacity;
+}
+
+/* lid */
+.hero__lid{
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 110%;
+  height: 100vh;
+  object-fit: cover;
+  pointer-events: none;
+
+  z-index: 40;
+  will-change: transform, opacity;
+}
+
+/* ✅ hero 안에서만 잠깐 보여줄 intro(복제본) */
+.hero__introStage{
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%, -50%) translateY(12px);
+  width: var(--paperW);
+  max-width: 92vw;
+
+  z-index: 15;
+  pointer-events: none;
+
+  opacity: 0;
+  transition: opacity 520ms ease, transform 520ms ease;
+}
+
+.hero__introStage .section__kicker{
+  text-align: center;
+  margin: 0 0 14px 0;
+}
+
+/* ✅ 인트로 박스 안쪽 여백도 “조금 더 여유롭게” */
+.heroIntro__paper{
+  padding: clamp(18px, 2.4vw, 28px) clamp(18px, 2.6vw, 30px);
+}
+
+.hero__introStage p{
+  margin: 0;
+  font-size: clamp(14px, 1.5vw, 16px);
+  line-height: 2.05;
+  text-align: center;
+  text-shadow: 0 1px 10px rgba(255,255,255,.35);
+}
+
+/* ✅ 처음에는 상자/히어로 인트로 숨김 */
+.hero__lid,
+.hero__bottom{
+  opacity: 0;
+  transform: translateX(-50%) translateY(14px) scale(.98);
+  transition: opacity 480ms ease, transform 480ms ease;
+}
+
+/* ✅ 스크롤 시작 → 타이틀 OUT, 상자 IN, hero-intro IN */
+body.is-box .hero__titleOnly{
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+body.is-box .hero__lid,
+body.is-box .hero__bottom{
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+body.is-box .hero__introStage{
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0);
+}
+
+/* ✅ (선택) 충분히 내려가면 상자 숨기기 */
+.hero.hero-done .hero__lid,
+.hero.hero-done .hero__bottom{
   opacity: 0;
   visibility: hidden;
 }
 
-/* 모바일 조정 */
+/* Mobile */
 @media (max-width: 480px){
   .hero__lid,
-  .hero__bottom{
-    height: 45vh;
+  .hero__bottom{ height: 45vh; }
+
+  .hero__titleOnly img{
+    width: min(520px, 88vw);
   }
 
-  /* ✅ 모바일에서 종이도 더 자연스럽게 줄어들게 */
-  .hero__paper{
-    width: clamp(240px, 88vw, 640px);
-  }
-
-  .hero__titleImg{
-    width: min(420px, 84%);
-  }
-
-  /* ✅ 모바일에서 겹침 정도/패딩 조정 */
-  .page-box{
-    margin-top: -10vh;
-    padding: 40px 16px 22px;
+  .hero__introStage{
+    top: 58%;
   }
 }
 
-/* ---------- 3) People ---------- */
+/* =========================
+   Intro 본문(텍스트) - 리듬 정리(선택)
+   - 인트로 텍스트가 더 “고급스럽게” 보이도록 줄간/간격
+========================= */
+.introText,
+#intro p,
+.step--intro p{
+  line-height: 2.05;
+}
+
+/* =========================
+   People (2열 유지)
+   - ✅ 카드 안 요소들이 넉넉히 중앙에 뜨도록 여백/간격 조정
+========================= */
 .people__grid{
-  margin-top: 28px;
+  margin-top: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 28px;
+  gap: clamp(34px, 4.8vw, 76px); /* ✅ 간격 확대 */
   align-items: start;
 }
-
-/* ✅ 2열 유지 + 그리드 아이템이 박스를 밀어내지 못하게 */
-.people__grid > *{
-  min-width: 0;
-}
+.people__grid > *{ min-width: 0; }
 
 .person{
   display: grid;
-  gap: 12px;
+  gap: 14px;
   position: relative;
   text-align: center;
-  min-width: 0; /* ✅ 안전 */
+  min-width: 0;
 }
 
-/* 캐릭터 이미지: 바깥 박스 제거 */
+/* 캐릭터 이미지가 너무 바닥에 붙지 않게 */
 .person__img{
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -275,12 +415,13 @@ main{
 
   position: relative;
   z-index: 2;
-  margin-bottom: -10px;
+
+  margin-bottom: 0;           /* ✅ 마이너스 제거 */
+  transform: translateY(6px); /* ✅ 살짝만 떠 보이게 */
 }
 
-/* 소개 카드 */
 .person__card{
-  transform: translateY(-26px) scaleY(1);
+  transform: none;            /* ✅ 카드 내부 여백이 충분해져서 과한 이동 제거 */
   transform-origin: top;
   opacity: 1;
 
@@ -290,142 +431,133 @@ main{
 
   transition-delay: 240ms, 240ms;
 
-  /* ✅ (중요) 중첩 문법 오류 제거 + 카드가 밖으로 못 나가게 */
   max-width: 100%;
-  overflow: hidden;  /* 또는 overflow: clip; */
+  overflow: hidden;
 }
 
 .person__card.is-open{
-  transform: translateY(0) scaleY(1);
+  transform: none;
   opacity: 1;
 }
 
 .person__name{
-  margin: 0 0 6px 0;
-  font-size: 18px;
+  margin: clamp(10px, 1.2vw, 14px) 0 clamp(8px, 1vw, 12px) 0;
+  font-size: clamp(16px, 1.8vw, 20px);
+  letter-spacing: .02em;
 }
 
 .person__desc{
   margin: 0;
   color: var(--muted);
-  font-size: 14px;
-
-  /* ✅ 긴 텍스트가 폭을 밀어내지 않게 */
+  font-size: clamp(13px, 1.4vw, 14.5px);
+  line-height: 1.8;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
-/* ---------- 4) Chapters ---------- */
+/* =========================
+   Chapters (3열 유지)
+   - ✅ 카드 안 여백이 넉넉한 만큼, 내부 요소 간격도 고급스럽게
+========================= */
 .chapters__grid{
-  margin-top: 28px;
+  margin-top: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  gap: clamp(18px, 3vw, 34px); /* ✅ 간격 확대 */
+  justify-items: center;
+  align-items: start;
 }
-
-/* ✅ 3열 유지 + 아이템이 폭을 밀어내지 않게 (안전) */
-.chapters__grid > *{
-  min-width: 0;
-}
+.chapters__grid > *{ min-width: 0; }
 
 .chapter{
-  border-radius: 22px;
-  border: 1px solid var(--line);
-  overflow: hidden;
-  background: rgba(255,255,255,.55);
-  box-shadow: var(--shadow);
-  transform: translateY(0);
-  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-  min-width: 0; /* ✅ 안전 */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+  transform: none;
+  transition: none;
+
+  padding-bottom: clamp(18px, 3vw, 34px); /* ✅ 아래 여백 확대 */
 }
 
 .chapter__imgWrap{
-  position: relative;
-  overflow: hidden;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  padding-top: clamp(8px, 1.6vw, 16px); /* ✅ 위 여백 살짝 */
 }
 
 .chapter__img{
-  width: 100%;
+  width: clamp(128px, 12.5vw, 182px); /* ✅ 살짝 크게 */
   aspect-ratio: 1 / 1;
-  object-fit: cover;
+  object-fit: contain;
+  display: block;
+
   transform: scale(1);
+  transform-origin: center;
   transition: transform .35s ease, filter .35s ease;
   filter: saturate(1) contrast(1);
 }
 
 .chapter__label{
+  width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 10px;
-  padding: 14px 16px;
-  border-top: 1px solid var(--line);
+  justify-content: center;
+  align-items: center;
+
+  margin-top: clamp(22px, 3.4vw, 40px);
+  padding: 0;
+  border-top: 0;
+  text-align: center;
 }
 
 .chapter__title{
-  font-weight: 700;
-  letter-spacing: .08em;
-  font-size: 13px;
+  font-weight: 740;
+  letter-spacing: .12em;
+  font-size: clamp(12px, 1.2vw, 13px);
+  opacity: .92;
 }
 
-.chapter__hint{
-  font-size: 12px;
-  color: var(--muted);
-}
-
-/* Hover */
-.chapter:hover{
-  transform: translateY(-6px);
-  border-color: rgba(0,0,0,.22);
-}
+.chapter__hint{ display: none; }
 
 .chapter:hover .chapter__img{
   transform: scale(1.06);
   filter: saturate(1.05) contrast(1.05);
 }
 
-/* keyboard focus */
 .chapter:focus-visible{
-  outline: 3px solid rgba(0,0,0,.35);
+  outline: 3px solid rgba(120, 90, 60, .35);
   outline-offset: 3px;
 }
 
 .chapters__note{
-  margin: 18px auto 0;
+  margin: clamp(26px, 3.4vw, 44px) auto 0;
   text-align: center;
   color: var(--muted);
   font-size: 13px;
 }
 
-code{
-  padding: 2px 6px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: rgba(255,255,255,.6);
-}
-
-/* ---------- Footer ---------- */
-.footer{
-  padding: 40px 0 60px;
-  display: grid;
-  place-items: center;
-  color: var(--muted);
-}
-
-.toTop{
-  border: 1px solid var(--line);
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.55);
-  box-shadow: var(--shadow);
-}
-
-/* ---------- Responsive ---------- */
+/* 모바일 3열 자동 조절 */
 @media (max-width: 900px){
-  .chapters__grid{ grid-template-columns: 1fr; }
   .people__grid{ grid-template-columns: 1fr; }
-  .section{ padding: 70px 0; }
+  .chapters__grid{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px){
+  .chapters__grid{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px){
+  .chapters__grid{ grid-template-columns: 1fr; }
 
-  /* ✅ 태블릿 구간에서 겹침 정도 */
-  .page-box{ margin-top: -14vh; }
+  /* 모바일에서 섹션 여백 너무 과하면 살짝만 줄이기 */
+  :root{
+    --stepPadY: clamp(64px, 9vh, 120px);
+    --cardMb: clamp(56px, 9vh, 110px);
+    --cardPy: clamp(22px, 3vw, 34px);
+    --cardPx: clamp(16px, 3.4vw, 26px);
+  }
 }

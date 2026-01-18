@@ -6,6 +6,30 @@
   <title>Chapter 1</title>
 
   <link rel="stylesheet" href="chapter1.css" />
+
+  <!-- Adobe Fonts (Typekit) -->
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'zmm6xez',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),
+      tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;
+      h.className+=" wf-loading";
+      tk.src='https://use.typekit.net/'+config.kitId+'.js';
+      tk.async=true;
+      tk.onload=tk.onreadystatechange=function(){
+        a=this.readyState;
+        if(f||a&&a!="complete"&&a!="loaded")return;
+        f=true;
+        clearTimeout(t);
+        try{Typekit.load(config)}catch(e){}
+      };
+      s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
 </head>
 
 <body>
@@ -29,7 +53,7 @@
 
       <div class="dialogue">
         <!-- 소제목 1 (dialogue 안으로 넣는 게 정렬,간격 관리가 쉽대) -->
-        <h2 class="section-tag"># 어린시절과 동심</h2>
+        <h2 class="section-tag"># 子ども時代と童心</h2>
 
         <div class="turn turn--me">
           <div class="speaker">私</div>
@@ -111,7 +135,7 @@
         </div>
 
         <!--  소제목 2 -->
-        <h2 class="section-tag section-tag--break"># 진로. 진학. 대학교 졸업전시</h2>
+        <h2 class="section-tag section-tag--break"># 進路についての悩み</h2>
 
         <div class="turn turn--me">
           <div class="speaker">私</div>
@@ -150,10 +174,6 @@
             高校では油絵（西洋画）を専攻していたのですが、<br/>
             高校2年生のときに、<br/>
             イホァ女子大学の創立記念のメイジョン展を見に行きました。<br/><br/>
-
-               ((ここにはスクロールアニメーションを配置する予定です。
-               スクロールに合わせて作品が横方向に流れ、
-               高校生時代の作家の後ろ姿は固定されたまま表示されます。))
 
 
             とても大きな展覧会だったんですが、<br/>
@@ -201,5 +221,13 @@
   </main>
 
   <script src="chapter1.js"></script>
+
+ <a href="chapter2.html" class="next-story" id="nextStory" aria-label="Next story">
+  <span class="next-story__text">Next story</span>
+  <img src="chapter2.PNG" alt="" class="next-story__icon" />
+</a>
+
+<script src="chapter1.js" defer></script>
 </body>
+
 </html>

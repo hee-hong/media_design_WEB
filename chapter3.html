@@ -6,7 +6,34 @@
   <title>Chapter 3</title>
 
   <link rel="stylesheet" href="chapter3.css" />
+
+  <!-- Adobe Fonts (Typekit) -->
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'zmm6xez',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),
+      tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;
+      h.className+=" wf-loading";
+      tk.src='https://use.typekit.net/'+config.kitId+'.js';
+      tk.async=true;
+      tk.onload=tk.onreadystatechange=function(){
+        a=this.readyState;
+        if(f||a&&a!="complete"&&a!="loaded")return;
+        f=true;
+        clearTimeout(t);
+        try{Typekit.load(config)}catch(e){}
+      };
+      s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
 </head>
+<script src="chapter3.js" defer></script>
+</body>
+</html>
 
 <body>
 
@@ -28,7 +55,7 @@
       <div class="dialogue">
 
         <!-- ========== Section 1 ========== -->
-        <h2 class="section-tag"># 그림 스타일 찾기, 방황, 그림책 학교</h2>
+        <h2 class="section-tag"># 夢に向かう時間</h2>
 
         <div class="turn turn--me">
           <div class="speaker">私</div>
@@ -58,6 +85,17 @@
             自然と形になっていったように感じています。
           </p>
         </div>
+      
+      
+      
+        <section class="scrollAnim" id="c4-scrollAnim" aria-label="scroll animation">
+  <div class="scrollAnim__sticky">
+    <img id="c4AnimImg" class="scrollAnim__img" src="c4_anim_01.PNG" alt="scroll animation frame" />
+  </div>
+</section>
+
+
+
 
         <div class="turn turn--me">
           <div class="speaker">私</div>
@@ -96,7 +134,7 @@
         </div>
 
         <!-- ========== Section 2 ========== -->
-        <h2 class="section-tag section-tag--break"># 영감을 얻는곳, 창작에 있어서 중요하게 생각하는것</h2>
+        <h2 class="section-tag section-tag--break"># 作家として大切にしていること</h2>
 
         <div class="turn turn--me">
           <div class="speaker">私</div>

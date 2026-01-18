@@ -6,6 +6,30 @@
   <title>Chapter 2</title>
 
   <link rel="stylesheet" href="chapter2.css" />
+
+  <!-- Adobe Fonts (Typekit) -->
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'zmm6xez',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),
+      tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;
+      h.className+=" wf-loading";
+      tk.src='https://use.typekit.net/'+config.kitId+'.js';
+      tk.async=true;
+      tk.onload=tk.onreadystatechange=function(){
+        a=this.readyState;
+        if(f||a&&a!="complete"&&a!="loaded")return;
+        f=true;
+        clearTimeout(t);
+        try{Typekit.load(config)}catch(e){}
+      };
+      s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
 </head>
 
 <body>
@@ -17,16 +41,12 @@
         <img class="hero-img hero-img--large" src="챕터-2-제목-이미지.png" alt="Chapter 2 Title" />
       </div>
 
-      <div class="hero-banner" id="heroBanner">
-        <img class="hero-img hero-img--banner" src="챕터-2-제목-이미지.png" alt="" />
-      </div>
-    </header>
-
+      
     <section class="reading">
       <div class="chapter-label">CHAPTER 2</div>
 
       <div class="dialogue">
-        <h2 class="section-tag"># 슬럼프</h2>
+        <h2 class="section-tag"># スランプ</h2>
 
         <div class="turn turn--me">
           <div class="speaker">私</div>
@@ -40,10 +60,11 @@
         <div class="turn turn--artist">
           <div class="speaker">作家</div>
           <p>
-            スいたと思います。<br/>
-            振り返ってみると、<br/>
-            あの時期が自分にとってのスランプだランプというよりは、<br/>
-            まったく描いていなかった時期がありました。<br/><br/>
+            スランプというよりは、<br/>
+            「まったく描いていなかった時期」がありました。<br/>
+            受験を始めてから大学に入るまでは、<br/>
+            どうしても描く余裕がなくなってしまいますよね。<br/><br/>
+            
 
             <!-- Chapter 2 Scroll Frame Animation (7 frames) -->
 <section class="scrollAnim" id="c2-scrollAnim" aria-label="scroll animation">
@@ -134,6 +155,11 @@
     </section>
   </main>
 
-  <script src="chapter2.js"></script>
+  <a href="chapter3.html" class="next-story" id="nextStory" aria-label="Next story">
+  <span class="next-story__text">Next story</span>
+  <img src="chapter3.PNG" alt="" class="next-story__icon" />
+</a>
+
+<script src="chapter2.js" defer></script>
 </body>
 </html>

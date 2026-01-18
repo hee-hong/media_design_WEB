@@ -95,3 +95,32 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", onScroll);
   updateFrame();
 })();
+
+
+
+// =========================
+// Next Story: show at page end
+// =========================
+(() => {
+  const next = document.getElementById("nextStory");
+  if (!next) return;
+
+  const showAt = 0.92; // 페이지 92% 지점에서 등장
+
+  function onScroll(){
+    const scrollY = window.scrollY;
+    const docH = document.documentElement.scrollHeight;
+    const viewH = window.innerHeight;
+
+    const progress = (scrollY + viewH) / docH;
+
+    if (progress >= showAt) {
+      next.classList.add("is-visible");
+    } else {
+      next.classList.remove("is-visible");
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+})();

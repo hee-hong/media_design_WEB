@@ -1,8 +1,9 @@
+// =========================
+// cards 인터랙션 (그대로 유지)
+// =========================
 document.addEventListener("DOMContentLoaded", () => {
   const cards = document.querySelectorAll(".person__card");
-  console.log("cards found:", cards.length);
 
-  // IntersectionObserver 미지원이면 그냥 항상 열어두기
   if (!("IntersectionObserver" in window)) {
     cards.forEach(card => card.classList.add("is-open"));
     return;
@@ -10,76 +11,142 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const blindIO = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      // ✅ 들어오면 열기
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-open");
-      } else {
-        // ✅ 나가면 다시 접기 (다시 내려올 때 또 열리게)
-        entry.target.classList.remove("is-open");
-      }
+      entry.target.classList.toggle("is-open", entry.isIntersecting);
     });
   }, {
-    threshold: 0.35,                 // 0.2~0.5 사이 취향 조절
+    threshold: 0.35,
     rootMargin: "0px 0px -10% 0px"
   });
 
-  cards.forEach((el) => blindIO.observe(el));
+  cards.forEach(el => blindIO.observe(el));
 });
 
+// =========================
+// JS 로드 표시
+// =========================
+document.documentElement.classList.add("js");
 
 
-gsap.registerPlugin(ScrollTrigger);
+// =========================
+// GSAP Hero (A안 전용) — 그대로 유지
+// =========================
+let HERO_ST = null;
+let HERO_TL = null;
 
-function buildHeroScroll() {
+function buildHeroScroll_A() {
+  if (!window.gsap || !window.ScrollTrigger) {
+    document.body.classList.add("is-box");
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
   const hero = document.querySelector("#top");
-  const main = document.querySelector("main");
-
   const lid = document.querySelector(".hero__lid");
   const bottom = document.querySelector(".hero__bottom");
-  const paper = document.querySelector(".hero__paper");
-  const titleImg = document.querySelector(".hero__titleImg");
-  const stage = document.querySelector(".hero__stage"); // ✅ hero 레이어 전체(있으면)
+  const lidMask = document.querySelector(".hero__lidMask");
+  const titleOnly = document.querySelector(".hero__titleOnly");
+  const heroIntro = document.querySelector(".hero__introStage");
 
-  if (!hero || !main || !lid || !bottom) return;
+  if (!hero || !lid || !bottom || !lidMask || !titleOnly || !heroIntro) {
+    document.body.classList.add("is-box");
+    return;
+  }
 
-  const scrollLen = window.innerHeight * 1.1;
+  if (HERO_ST) HERO_ST.kill();
+  if (HERO_TL) HERO_TL.kill();
 
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: hero,
-      start: "top top",
-      end: `+=${scrollLen}`,
-      scrub: true,
-      pin: true,
-      anticipatePin: 1,
-      onLeave: () => hero.classList.add("hero-done"),
-      onEnterBack: () => hero.classList.remove("hero-done"),
+  hero.classList.remove("hero-done");
+
+  gsap.set([lid, bottom], { xPercent: -50, opacity: 0 });
+  gsap.set(titleOnly, { opacity: 1 });
+  gsap.set(heroIntro, { opacity: 0, y: 16 });
+
+  const scrollLen = window.innerHeight * 1.35;
+
+  HERO_TL = gsap.timeline({ defaults: { ease: "none" } });
+
+  HERO_TL.to(titleOnly, { opacity: 0, y: -10, duration: 0.18 }, 0)
+         .to([lid, bottom], { opacity: 1, duration: 0.18 }, 0.06)
+         .to(lid, { yPercent: -120, duration: 0.6 }, 0.2)
+         .to(bottom, { yPercent: 120, duration: 0.6 }, 0.2)
+         .to(lidMask, { yPercent: -290, opacity: 0, duration: 0.6 }, 0.2)
+         .to(heroIntro, { opacity: 1, y: 0, duration: 0.36 }, 0.32)
+         .to({}, { duration: 0.15 }, 0.7)
+         .to(heroIntro, { opacity: 0, y: -10, duration: 0.2 }, 0.85)
+         .to(lid, { yPercent: -180, opacity: 0, duration: 0.25 }, 0.88)
+         .to(bottom, { yPercent: 180, opacity: 0, duration: 0.25 }, 0.88);
+
+  HERO_ST = ScrollTrigger.create({
+    trigger: hero,
+    start: "top top",
+    end: `+=${scrollLen}`,
+    scrub: true,
+    pin: true,
+    animation: HERO_TL,
+    onUpdate: self => {
+      if (self.progress > 0.01) document.body.classList.add("is-box");
     }
   });
 
-  tl.to(lid, { yPercent: -120, ease: "none" }, 0);
-  tl.to(bottom, { yPercent: 120, ease: "none" }, 0);
-
-  // ✅ hero 안 요소만 페이드 (pageBox는 절대 포함 X)
-  tl.to([paper, titleImg].filter(Boolean), { opacity: 0, ease: "none" }, 0.15);
-
-  // ✅ 너의 의도 유지: main 끌어올림은 유지해도 됨
-  tl.to(main, { y: -window.innerHeight, ease: "none" }, 0);
+  ScrollTrigger.refresh();
 }
 
-window.addEventListener("load", () => {
-  // ✅ lid/bottom 기본 스케일 고정 (GSAP가 transform을 덮어써도 scale 유지)
-  gsap.set([".hero__lid", ".hero__bottom"], {
-    scale: 1,
-    transformOrigin: "50% 50%"
-  });
 
-  buildHeroScroll();
+// =========================
+// ✅ STEP 카드 (People / Chapters)
+// =========================
+function buildStepCards() {
+  if (!window.gsap || !window.ScrollTrigger) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.querySelectorAll(".step").forEach(step => {
+    const box = step.querySelector(".sectionBox");
+    if (!box) return;
+
+    const isFinal = step.classList.contains("step--final");
+
+    gsap.set(box, { opacity: 0, y: 34 });
+
+    // ✅ 스크롤 “덜” 하게: pin 구간 자체를 줄임
+    const endLen = isFinal ? "+=90%" : "+=80%";
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: step,
+        start: "top top",
+        end: endLen,
+        scrub: true,
+        pin: true,
+        anticipatePin: 1
+      }
+    });
+
+    // ✅ 더 빨리 나타나기
+    tl.to(box, { opacity: 1, y: 0, duration: 0.22 }, 0.05);
+
+    // ✅ final은 유지 / people은 더 빨리 사라지기
+    tl.to(
+      box,
+      isFinal
+        ? { opacity: 1, y: 0, duration: 0.2 }
+        : { opacity: 0, y: -26, duration: 0.22 },
+      0.62
+    );
+  });
+}
+
+
+
+// =========================
+// init
+// =========================
+window.addEventListener("load", () => {
+  buildHeroScroll_A();
+  buildStepCards();
 });
 
-
 window.addEventListener("resize", () => {
-  ScrollTrigger.getAll().forEach(st => st.kill());
-  gsap.set("main", { clearProps: "transform" });
-  buildHeroScroll();
+  ScrollTrigger.refresh();
 });
